@@ -4,6 +4,14 @@ import { ArrowRight, Code2, Globe2, Zap, MessageSquare, Users, ChevronRight, Git
 function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [descriptionVisible, setDescriptionVisible] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const images = [
+    "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200",
+    "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200",
+    "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=1200",
+    "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=1200"
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,6 +25,13 @@ function App() {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   const scrollToTop = () => {
@@ -35,7 +50,7 @@ function App() {
                 alt="Logo"
                 className="h-10 w-auto rounded-full"
               />
-              <span className="ml-2 text-xl font-bold text-white">TechZest</span>
+              <span className="ml-2 text-xl font-bold text-white"></span>
             </div>
             <div className="hidden md:flex space-x-8">
               <a href="#about" className="text-white hover:text-gray-300 flex items-center">
@@ -77,11 +92,31 @@ function App() {
             <h1 className="text-5xl font-bold text-gray-900 mb-6">
               TechZest Global Solutions
             </h1>
-            <img
-              src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200"
-              alt="Hero"
-              className="w-full max-w-3xl mx-auto rounded-lg shadow-lg mt-8 animate-zoomIn"
-            />
+            <div className="relative overflow-hidden mt-8">
+              <div className="flex transition-transform duration-500 ease-in-out" 
+                   style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}>
+                {images.map((image, index) => (
+                  <div key={index} className="min-w-full">
+                    <img
+                      src={image}
+                      alt={`Tech ${index + 1}`}
+                      className="w-full max-w-3xl mx-auto rounded-lg shadow-lg animate-zoomIn object-cover h-[400px]"
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                {images.map((_, index) => (
+                  <button
+                    key={index}
+                    className={`w-2 h-2 rounded-full transition-colors duration-300 ${
+                      currentImageIndex === index ? 'bg-blue-600' : 'bg-gray-300'
+                    }`}
+                    onClick={() => setCurrentImageIndex(index)}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
